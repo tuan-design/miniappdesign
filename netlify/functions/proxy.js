@@ -1,37 +1,40 @@
-exports.handler = async function(event, context) {
-  const url = decodeURIComponent(event.queryStringParameters.url || '');
-
-  if (!url) {
+// Thêm timeout và headers kiểm soát
+export async function handler(event) {
+  const targetUrl = decodeURIComponent(event.queryStringParameters.url || '');
+  if (!targetUrl || !targetUrl.startsWith('http')) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: 'Thiếu tham số ?url=' }),
+      body: 'URL không hợp lệ'
     };
   }
 
   try {
-    const options = {
-      method: event.httpMethod,
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    
+    const response = await fetch(targetUrl, {
+      signal: controller.signal,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: event.httpMethod === 'POST' ? event.body : undefined
-    };
-
-    const res = await fetch(url, options);
-    const data = await res.text();
-
+        'User-Agent': 'MiniApp Finance Tracker'
+      }
+    });
+    
+    clearTimeout(timeout);
+    
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
+      headers: { 
+        'Content-Type': response.headers.get('Content-Type') || 'application/json',
+        'Cache-Control': 'public, max-age=300'
       },
-      body: data
+      body: await response.text()
     };
   } catch (err) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Lỗi fetch: ' + err.message })
+      body: `Lỗi: ${err.message}`
     };
   }
-};
+}
