@@ -4,15 +4,17 @@ exports.handler = async function(event, context) {
   if (!url) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: 'Thiếu tham số ?url=' })
+      body: JSON.stringify({ error: 'Thiếu tham số ?url=' }),
     };
   }
 
   try {
     const options = {
       method: event.httpMethod,
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: event.httpMethod === 'POST' ? event.body : undefined,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: event.httpMethod === 'POST' ? event.body : undefined
     };
 
     const res = await fetch(url, options);
@@ -26,10 +28,10 @@ exports.handler = async function(event, context) {
       },
       body: data
     };
-  } catch (error) {
+  } catch (err) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Lỗi fetch: ' + error.message })
+      body: JSON.stringify({ error: 'Lỗi fetch: ' + err.message })
     };
   }
 };
