@@ -5,7 +5,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 const apiUrl = urlParams.get('api');
 const sheetId = urlParams.get('sheetId');
-const proxyUrl = 'https://miniappdesign.netlify.app/.netlify/functions/proxy?url=';
+const proxyUrl = 'https://miniappshare.netlify.app/.netlify/functions/proxy?url=';
 
 // Kiểm tra thông số API và Sheet ID
 if (!apiUrl || !sheetId) {
