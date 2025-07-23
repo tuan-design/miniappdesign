@@ -9,25 +9,6 @@ const sheetId = urlParams.get('sheetId');
 const fullApiUrl = api + "?action=getCategories&sheetId=" + sheetId;
 const proxyUrl = "/.netlify/functions/proxy?url=" + encodeURIComponent(fullApiUrl);
 
-// ✅ Gọi API qua proxy
-function loadCategories() {
-  fetch(proxyUrl)
-    .then(response => {
-      if (!response.ok) throw new Error("Lỗi khi gọi proxy");
-      return response.json();
-    })
-    .then(data => {
-      console.log("Danh sách phân loại:", data);
-      // TODO: xử lý hiển thị danh sách phân loại ở đây
-    })
-    .catch(error => {
-      console.error("Lỗi khi lấy danh sách phân loại:", error.message);
-      alert("Lỗi khi lấy danh sách phân loại: " + error.message);
-    });
-}
-
-document.addEventListener("DOMContentLoaded", loadCategories);
-
 
 // Kiểm tra thông số API và Sheet ID
 if (!apiUrl || !sheetId) {
