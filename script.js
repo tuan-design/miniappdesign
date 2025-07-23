@@ -5,10 +5,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 const apiUrl = urlParams.get('api');
 const sheetId = urlParams.get('sheetId');
-// ✅ Tạo URL gọi qua proxy
-const fullApiUrl = api + "?action=getCategories&sheetId=" + sheetId;
-const proxyUrl = "/.netlify/functions/proxy?url=" + encodeURIComponent(fullApiUrl);
-
+const proxyUrl = 'https://miniappdesign.netlify.app/.netlify/functions/proxy?url=';
 
 // Kiểm tra thông số API và Sheet ID
 if (!apiUrl || !sheetId) {
