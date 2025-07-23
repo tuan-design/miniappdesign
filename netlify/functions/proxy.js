@@ -1,54 +1,42 @@
 const fetch = require('node-fetch');
 
-exports.handler = async function (event, context) {
+exports.handler = async function(event, context) {
+  const url = event.queryStringParameters.url;
+
+  if (!url) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'Thiếu tham số ?url=' })
+    };
+  }
+
   try {
-    // Lấy tham số 'url' từ query string
-    const targetUrl = event.queryStringParameters.url;
-    if (!targetUrl) {
-      return {
-        statusCode: 400,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type'
-        },
-        body: JSON.stringify({ error: 'Thiếu tham số url' })
-      };
+    const method = event.httpMethod;
+    const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+    const options = {
+      method,
+      headers,
+    };
+
+    // Nếu là POST → thêm body
+    if (method === "POST") {
+      options.body = event.body;
     }
 
-    // Lấy method và body từ yêu cầu
-    const method = event.httpMethod;
-    const body = event.body ? JSON.parse(event.body) : null;
+    const response = await fetch(url, options);
+    const data = await response.text(); // Có thể là JSON hoặc text
 
-    // Gửi yêu cầu đến URL đích (Google Apps Script)
-    const response = await fetch(targetUrl, {
-      method: method,
-      headers: { 'Content-Type': 'application/json' },
-      body: method === 'POST' ? JSON.stringify(body) : undefined
-    });
-
-    // Lấy dữ liệu phản hồi
-    const data = await response.json();
-
-    // Trả về phản hồi với CORS headers
     return {
-      statusCode: response.status,
+      statusCode: 200,
       headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
+        'Access-Control-Allow-Origin': '*', // Cho phép CORS
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data)
+      body: data
     };
   } catch (error) {
-    console.error('Lỗi proxy:', error);
     return {
       statusCode: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
-      },
       body: JSON.stringify({ error: 'Lỗi proxy: ' + error.message })
     };
   }
