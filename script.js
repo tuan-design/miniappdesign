@@ -5,7 +5,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 const apiUrl = urlParams.get('api');
 const sheetId = urlParams.get('sheetId');
-const proxyUrl = 'https://miniappdesign.netlify.app/.netlify/functions/proxy?url=';
+const proxyUrl = 'https://miniappshare.netlify.app/.netlify/functions/proxy?url=';
 
 // Kiểm tra thông số API và Sheet ID
 if (!apiUrl || !sheetId) {
@@ -1741,34 +1741,3 @@ document.getElementById('nextPageSearch').addEventListener('click', () => {
   // Mở tab mặc định
   window.openTab('tab1');
 });
-
-function handleAddTransaction(e) {
-  const sheetId = e.parameter.sheetId;
-  const sheetName = e.parameter.sheetName || "Giao dịch";
-  const date = e.parameter.date;
-  const category = e.parameter.category;
-  const amount = parseFloat(e.parameter.amount);
-  const note = e.parameter.note || "";
-
-  if (!sheetId || !date || !category || isNaN(amount)) {
-    return ContentService.createTextOutput(JSON.stringify({
-      error: "Thiếu thông tin bắt buộc"
-    })).setMimeType(ContentService.MimeType.JSON);
-  }
-
-  const ss = SpreadsheetApp.openById(sheetId);
-  const sheet = ss.getSheetByName(sheetName);
-  if (!sheet) {
-    return ContentService.createTextOutput(JSON.stringify({
-      error: `Không tìm thấy sheet tên "${sheetName}"`
-    })).setMimeType(ContentService.MimeType.JSON);
-  }
-
-  sheet.appendRow([date, category, amount, note]);
-
-  return ContentService.createTextOutput(JSON.stringify({
-    success: true,
-    message: "Đã thêm giao dịch thành công"
-  })).setMimeType(ContentService.MimeType.JSON);
-}
-
