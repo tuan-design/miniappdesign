@@ -1,28 +1,22 @@
-const fetch = require('node-fetch');
-
 exports.handler = async function(event, context) {
-  const targetUrl = decodeURIComponent(event.queryStringParameters.url || '');
-  if (!targetUrl) {
+  const url = decodeURIComponent(event.queryStringParameters.url || '');
+
+  if (!url) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: 'Thiếu tham số ?url=' }),
+      body: JSON.stringify({ error: 'Thiếu tham số ?url=' })
     };
   }
 
   try {
-    const method = event.httpMethod;
-    const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
     const options = {
-      method,
-      headers,
+      method: event.httpMethod,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: event.httpMethod === 'POST' ? event.body : undefined,
     };
 
-    if (method === 'POST') {
-      options.body = event.body;
-    }
-
-    const response = await fetch(targetUrl, options);
-    const data = await response.text();
+    const res = await fetch(url, options);
+    const data = await res.text();
 
     return {
       statusCode: 200,
@@ -30,12 +24,12 @@ exports.handler = async function(event, context) {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
-      body: data,
+      body: data
     };
-  } catch (err) {
+  } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Fetch error: ' + err.message }),
+      body: JSON.stringify({ error: 'Lỗi fetch: ' + error.message })
     };
   }
 };
