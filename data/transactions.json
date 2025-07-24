@@ -1,0 +1,49 @@
+{
+  "transactions": [
+    {
+      "id": "GD001",
+      "date": "2023-10-15",
+      "content": "Lương tháng 10",
+      "amount": 15000000,
+      "type": "Thu nhập",
+      "category": "Lương chính",
+      "note": ""
+    },
+    {
+      "id": "GD002",
+      "date": "2023-10-16",
+      "content": "Mua đồ siêu thị",
+      "amount": 750000,
+      "type": "Chi tiêu",
+      "category": "Ăn uống",
+      "note": "Mua thực phẩm tuần"
+    },
+    {
+      "id": "GD003",
+      "date": "2023-10-17",
+      "content": "Tiền điện",
+      "amount": 450000,
+      "type": "Chi tiêu",
+      "category": "Hóa đơn",
+      "note": "Tháng 10"
+    },
+    {
+      "id": "GD004",
+      "date": "2023-10-18",
+      "content": "Mua quần áo",
+      "amount": 1200000,
+      "type": "Chi tiêu",
+      "category": "Mua sắm",
+      "note": "Quần tây công sở"
+    },
+    {
+      "id": "GD005",
+      "date": "2023-10-19",
+      "content": "Tiền thưởng dự án",
+      "amount": 5000000,
+      "type": "Thu nhập",
+      "category": "Lương phụ",
+      "note": "Dự án XYZ"
+    }
+  ]
+}
