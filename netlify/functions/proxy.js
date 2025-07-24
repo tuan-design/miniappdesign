@@ -1,40 +1,48 @@
-// Thêm timeout và headers kiểm soát
-export async function handler(event) {
-  const targetUrl = decodeURIComponent(event.queryStringParameters.url || '');
-  if (!targetUrl || !targetUrl.startsWith('http')) {
+const fetch = require('node-fetch');
+
+exports.handler = async function(event, context) {
+  const targetUrl = event.queryStringParameters.url;
+
+  if (!targetUrl) {
     return {
       statusCode: 400,
-      body: 'URL không hợp lệ'
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+      body: JSON.stringify({ error: 'Missing target URL' }),
     };
   }
 
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-    
     const response = await fetch(targetUrl, {
-      signal: controller.signal,
+      method: event.httpMethod,
       headers: {
-        'User-Agent': 'MiniApp Finance Tracker'
-      }
-    });
-    
-    clearTimeout(timeout);
-    
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    
-    return {
-      statusCode: 200,
-      headers: { 
-        'Content-Type': response.headers.get('Content-Type') || 'application/json',
-        'Cache-Control': 'public, max-age=300'
+        'Content-Type': 'application/json',
       },
-      body: await response.text()
+      body: event.httpMethod === 'POST' ? event.body : undefined,
+    });
+
+    const data = await response.text();
+    return {
+      statusCode: response.status,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+      body: data,
     };
-  } catch (err) {
+  } catch (error) {
     return {
       statusCode: 500,
-      body: `Lỗi: ${err.message}`
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+      body: JSON.stringify({ error: error.message }),
     };
   }
-}
+};
