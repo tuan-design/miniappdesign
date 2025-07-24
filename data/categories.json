@@ -1,0 +1,23 @@
+{
+  "income_categories": [
+    "Lương chính",
+    "Lương phụ",
+    "Đầu tư",
+    "Kinh doanh",
+    "Quà tặng",
+    "Khác"
+  ],
+  "expense_categories": [
+    "Ăn uống",
+    "Di chuyển",
+    "Nhà ở",
+    "Hóa đơn",
+    "Mua sắm",
+    "Giải trí",
+    "Sức khỏe",
+    "Giáo dục",
+    "Cho vay",
+    "Từ thiện",
+    "Khác"
+  ]
+}
